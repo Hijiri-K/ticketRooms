@@ -25,10 +25,15 @@ export default function AdminDashboardPage() {
 
   useEffect(() => {
     fetch("/api/admin/dashboard")
-      .then((res) => res.json())
+      .then((res) => {
+        if (!res.ok) return null;
+        return res.json();
+      })
       .then((data) => {
-        setStats(data.stats);
-        setRecentTickets(data.recentTickets);
+        if (data) {
+          setStats(data.stats);
+          setRecentTickets(data.recentTickets ?? []);
+        }
       })
       .finally(() => setLoading(false));
   }, []);
