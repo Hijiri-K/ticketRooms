@@ -26,13 +26,21 @@ export async function verifyLiffToken(accessToken: string): Promise<LineProfile 
     }),
   });
 
-  if (!verifyRes.ok) return null;
+  if (!verifyRes.ok) {
+    const errBody = await verifyRes.text();
+    console.error("LINE verify failed:", verifyRes.status, errBody, "channel_id:", process.env.LINE_CHANNEL_ID);
+    return null;
+  }
 
   const profileRes = await fetch("https://api.line.me/v2/profile", {
     headers: { Authorization: `Bearer ${accessToken}` },
   });
 
-  if (!profileRes.ok) return null;
+  if (!profileRes.ok) {
+    const errBody = await profileRes.text();
+    console.error("LINE profile failed:", profileRes.status, errBody);
+    return null;
+  }
 
   return profileRes.json() as Promise<LineProfile>;
 }
