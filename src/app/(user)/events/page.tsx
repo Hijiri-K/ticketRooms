@@ -115,44 +115,6 @@ export default function EventsPage() {
         {tags.length > 0 && (
           <div className="mb-6 -mx-5 px-5 anim-fade-up" style={{ animationDelay: "60ms" }}>
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-              <button
-                onClick={() => handleTagSelect(null)}
-                className="flex flex-col items-center gap-1 flex-shrink-0"
-              >
-                <div
-                  className="flex h-14 w-14 items-center justify-center rounded-full transition-all duration-200"
-                  style={{
-                    border: `1.5px solid ${
-                      selectedTagId === null
-                        ? "var(--accent)"
-                        : "var(--border)"
-                    }`,
-                    background:
-                      selectedTagId === null
-                        ? "var(--accent-glow)"
-                        : "var(--bg-surface)",
-                  }}
-                >
-                  <span
-                    className="text-[10px] font-medium uppercase tracking-widest"
-                    style={{ color: "var(--text-secondary)" }}
-                  >
-                    ALL
-                  </span>
-                </div>
-                <span
-                  className="text-[10px] tracking-wide"
-                  style={{
-                    color:
-                      selectedTagId === null
-                        ? "var(--accent)"
-                        : "var(--text-muted)",
-                    fontWeight: selectedTagId === null ? 500 : 400,
-                  }}
-                >
-                  すべて
-                </span>
-              </button>
               {tags.map((tag) => {
                 const isSelected = selectedTagId === tag.id;
                 return (
