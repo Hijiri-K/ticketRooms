@@ -9,8 +9,14 @@ interface QrCodeDisplayProps {
 
 export function QrCodeDisplay({ value, size = 200 }: QrCodeDisplayProps) {
   return (
-    <div className="flex justify-center rounded-xl bg-white p-6 shadow-sm">
-      <QRCodeSVG value={value} size={size} level="H" />
+    <div className="flex justify-center rounded-xl bg-white p-4">
+      <QRCodeSVG
+        value={value}
+        size={size}
+        level="H"
+        bgColor="#ffffff"
+        fgColor="#000000"
+      />
     </div>
   );
 }

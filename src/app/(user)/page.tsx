@@ -42,8 +42,12 @@ export default function Home() {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="text-center">
-          <p className="text-red-500 text-lg">エラーが発生しました</p>
-          <p className="text-gray-500 mt-2 text-sm">{error}</p>
+          <p className="text-lg" style={{ color: "var(--error)" }}>
+            エラーが発生しました
+          </p>
+          <p className="mt-2 text-sm" style={{ color: "var(--text-muted)" }}>
+            {error}
+          </p>
         </div>
       </div>
     );
@@ -52,8 +56,16 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <div className="text-center">
-        <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500" />
-        <p className="text-gray-600">{status}</p>
+        <div
+          className="mx-auto mb-4 h-6 w-6 rounded-full border-2 border-transparent"
+          style={{
+            borderTopColor: "var(--accent)",
+            animation: "spin-slow 0.8s linear infinite",
+          }}
+        />
+        <p className="text-sm font-light" style={{ color: "var(--text-muted)" }}>
+          {status}
+        </p>
       </div>
     </div>
   );

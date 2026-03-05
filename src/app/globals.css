@@ -1,29 +1,207 @@
 @import "tailwindcss";
 
+/* ============================================
+   DESIGN TOKENS
+   ============================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* User theme (light — default) */
+  --bg-base:      #f7f6f3;
+  --bg-surface:   #ffffff;
+  --bg-elevated:  #efeeeb;
+  --border:       #e4e2de;
+  --border-light: #eeede9;
+
+  --text-primary:   #1a1a1c;
+  --text-secondary: #5c5c58;
+  --text-muted:     #9b9b97;
+
+  --accent:      #b8943f;
+  --accent-dim:  #9a7d34;
+  --accent-glow: rgba(184, 148, 63, 0.12);
+
+  --success:     #4caf7d;
+  --success-dim: rgba(76, 175, 125, 0.12);
+  --error:       #e05c5c;
+  --error-dim:   rgba(224, 92, 92, 0.12);
+  --warning:     #d4956a;
+  --warning-dim: rgba(212, 149, 106, 0.12);
+
+  /* Theme-dependent values for components */
+  --card-shadow:      0 1px 4px rgba(0,0,0,0.06);
+  --nav-bg:           rgba(255, 255, 255, 0.88);
+  --btn-on-accent:    #ffffff;
+  --no-image-gradient: linear-gradient(135deg, var(--bg-elevated) 0%, #dddbd6 100%);
+  --hero-overlay:     linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 100%);
+  --shimmer-mid:      #e8e7e3;
+  --lottery-badge-bg: rgba(184, 148, 63, 0.12);
+  --lottery-badge-border: rgba(184, 148, 63, 0.35);
+
+  /* Admin theme (light) */
+  --admin-bg:      #f7f6f3;
+  --admin-surface: #ffffff;
+  --admin-border:  #e4e2de;
+  --admin-text:    #1a1a1c;
+  --admin-muted:   #767672;
+  --admin-accent:  #1a1a1c;
+
+  /* Motion */
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring:   cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ============================================
+   DARK THEME
+   ============================================ */
+
+[data-theme="dark"] {
+  --bg-base:      #0c0c0e;
+  --bg-surface:   #141416;
+  --bg-elevated:  #1c1c20;
+  --border:       #252528;
+  --border-light: #1e1e22;
+
+  --text-primary:   #f0ede8;
+  --text-secondary: #9b9ba3;
+  --text-muted:     #55555c;
+
+  --accent:      #c9a96e;
+  --accent-dim:  #9a7d4e;
+  --accent-glow: rgba(201, 169, 110, 0.15);
+
+  --card-shadow:      0 1px 3px rgba(0,0,0,0.4);
+  --nav-bg:           rgba(12, 12, 14, 0.88);
+  --btn-on-accent:    #0c0c0e;
+  --no-image-gradient: linear-gradient(135deg, var(--bg-elevated) 0%, #1e1e26 100%);
+  --hero-overlay:     linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.85) 100%);
+  --shimmer-mid:      #2a2a2e;
+  --lottery-badge-bg: rgba(201, 169, 110, 0.18);
+  --lottery-badge-border: rgba(201, 169, 110, 0.4);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-background: var(--bg-base);
+  --color-foreground: var(--text-primary);
+  --color-surface:    var(--bg-surface);
+  --color-elevated:   var(--bg-elevated);
+  --color-border:     var(--border);
+  --color-accent:     var(--accent);
+  --color-accent-dim: var(--accent-dim);
+  --color-muted:      var(--text-muted);
+  --color-secondary:  var(--text-secondary);
+  --font-sans: var(--font-noto-sans-jp), var(--font-inter), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), "Courier New", monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================
+   KEYFRAME ANIMATIONS
+   ============================================ */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fade-up-sm {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up-overlay {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes indicator-slide {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+
+@keyframes shimmer {
+  from { background-position: -200% 0; }
+  to   { background-position: 200% 0; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50%      { box-shadow: 0 0 20px 4px var(--accent-glow); }
+}
+
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* ============================================
+   ANIMATION UTILITY CLASSES
+   ============================================ */
+
+.anim-fade-up {
+  animation: fade-up 0.6s var(--ease-out-expo) both;
+}
+
+.anim-fade-in {
+  animation: fade-in 0.4s ease both;
+}
+
+.anim-scale-in {
+  animation: scale-in 0.4s var(--ease-out-expo) both;
+}
+
+.stagger-children > * {
+  animation: fade-up 0.55s var(--ease-out-expo) both;
+}
+.stagger-children > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-children > *:nth-child(2) { animation-delay: 60ms; }
+.stagger-children > *:nth-child(3) { animation-delay: 120ms; }
+.stagger-children > *:nth-child(4) { animation-delay: 180ms; }
+.stagger-children > *:nth-child(5) { animation-delay: 240ms; }
+.stagger-children > *:nth-child(6) { animation-delay: 300ms; }
+.stagger-children > *:nth-child(n+7) { animation-delay: 360ms; }
+
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-elevated) 25%, var(--shimmer-mid) 50%, var(--bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* ============================================
+   BASE STYLES
+   ============================================ */
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg-base);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* ============================================
+   SCROLLBAR
+   ============================================ */
 
 .scrollbar-hide {
   -ms-overflow-style: none;

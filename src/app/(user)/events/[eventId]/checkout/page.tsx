@@ -21,7 +21,6 @@ export default function CheckoutPage() {
   useEffect(() => {
     if (!accessToken || !ticketTypeId) return;
 
-    // Fetch event details
     fetch(`/api/events/${eventId}`)
       .then((res) => res.json())
       .then((data) => {
@@ -37,7 +36,6 @@ export default function CheckoutPage() {
         }
       });
 
-    // Create payment intent
     fetch("/api/payments/create-intent", {
       method: "POST",
       headers: {
@@ -57,7 +55,7 @@ export default function CheckoutPage() {
   if (!ticketTypeId) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <p className="text-red-500">チケット種別が指定されていません</p>
+        <p style={{ color: "var(--error)" }}>チケット種別が指定されていません</p>
       </div>
     );
   }
@@ -65,7 +63,7 @@ export default function CheckoutPage() {
   if (error) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">
-        <p className="text-red-500">{error}</p>
+        <p style={{ color: "var(--error)" }}>{error}</p>
       </div>
     );
   }
@@ -73,27 +71,70 @@ export default function CheckoutPage() {
   if (!clientSecret) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500" />
+        <div
+          className="h-6 w-6 rounded-full border-2 border-transparent"
+          style={{
+            borderTopColor: "var(--accent)",
+            animation: "spin-slow 0.8s linear infinite",
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6">
+    <div className="min-h-screen px-5 py-8">
       <div className="mx-auto max-w-md">
-        <h1 className="mb-1 text-2xl font-bold text-gray-900">お支払い</h1>
-        <p className="mb-1 text-sm text-gray-600">{eventTitle}</p>
-        <p className="mb-1 text-xs text-gray-500">{ticketTypeName}</p>
-        <p className="mb-6 text-lg font-bold text-gray-900">
+        <h1
+          className="mb-1 text-2xl font-light tracking-tight anim-fade-up"
+          style={{ color: "var(--text-primary)" }}
+        >
+          CHECKOUT
+        </h1>
+        <p
+          className="mb-1 text-sm font-light"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          {eventTitle}
+        </p>
+        <p className="mb-1 text-xs" style={{ color: "var(--text-muted)" }}>
+          {ticketTypeName}
+        </p>
+        <p
+          className="mb-6 text-xl font-light"
+          style={{ color: "var(--accent)" }}
+        >
           ¥{ticketTypePrice.toLocaleString()}
         </p>
 
-        <Elements
-          stripe={stripePromise}
-          options={{ clientSecret, locale: "ja" }}
+        <div
+          className="rounded-2xl p-5 anim-fade-up"
+          style={{
+            background: "var(--bg-surface)",
+            border: "1px solid var(--border)",
+            animationDelay: "100ms",
+          }}
         >
-          <CheckoutForm />
-        </Elements>
+          <Elements
+            stripe={stripePromise}
+            options={{
+              clientSecret,
+              locale: "ja",
+              appearance: {
+                theme: "stripe",
+                variables: {
+                  colorPrimary: "#b8943f",
+                  colorBackground: "#ffffff",
+                  colorText: "#1a1a1c",
+                  colorDanger: "#e05c5c",
+                  borderRadius: "12px",
+                },
+              },
+            }}
+          >
+            <CheckoutForm />
+          </Elements>
+        </div>
       </div>
     </div>
   );

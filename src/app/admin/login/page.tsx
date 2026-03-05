@@ -37,14 +37,37 @@ export default function AdminLoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="w-full max-w-sm bg-white rounded-lg shadow-md p-8">
-        <h1 className="text-xl font-bold text-center text-gray-900 mb-6">
-          Rooms 管理画面
-        </h1>
+    <div
+      className="min-h-screen flex items-center justify-center"
+      style={{ background: "var(--admin-bg)" }}
+    >
+      <div
+        className="w-full max-w-sm rounded-lg p-8"
+        style={{
+          background: "var(--admin-surface)",
+          border: "1px solid var(--admin-border)",
+        }}
+      >
+        <div className="text-center mb-8">
+          <h1
+            className="text-[13px] font-semibold tracking-[0.2em] uppercase"
+            style={{ color: "var(--admin-text)" }}
+          >
+            ROOMS
+          </h1>
+          <p
+            className="text-[10px] tracking-[0.15em] uppercase mt-1"
+            style={{ color: "var(--admin-muted)" }}
+          >
+            Admin Console
+          </p>
+        </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+              style={{ color: "var(--admin-muted)" }}
+            >
               メールアドレス
             </label>
             <input
@@ -52,11 +75,21 @@ export default function AdminLoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+              style={{
+                background: "var(--admin-bg)",
+                border: "1px solid var(--admin-border)",
+                color: "var(--admin-text)",
+                // @ts-expect-error CSS variable in focus ring
+                "--tw-ring-color": "var(--admin-text)",
+              }}
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label
+              className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+              style={{ color: "var(--admin-muted)" }}
+            >
               パスワード
             </label>
             <input
@@ -64,16 +97,27 @@ export default function AdminLoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+              style={{
+                background: "var(--admin-bg)",
+                border: "1px solid var(--admin-border)",
+                color: "var(--admin-text)",
+                // @ts-expect-error CSS variable in focus ring
+                "--tw-ring-color": "var(--admin-text)",
+              }}
             />
           </div>
           {error && (
-            <p className="text-sm text-red-600">{error}</p>
+            <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>
           )}
           <button
             type="submit"
             disabled={loading}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+            className="w-full py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97] disabled:opacity-50"
+            style={{
+              background: "var(--admin-accent)",
+              color: "var(--admin-surface)",
+            }}
           >
             {loading ? "ログイン中..." : "ログイン"}
           </button>

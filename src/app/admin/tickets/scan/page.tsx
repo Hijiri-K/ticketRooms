@@ -15,6 +15,32 @@ type ScanResult =
   | { type: "success"; ticket: TicketInfo }
   | { type: "error"; message: string; ticket?: TicketInfo };
 
+function StatusIcon({ type }: { type: "success" | "error" }) {
+  if (type === "success") {
+    return (
+      <div
+        className="w-8 h-8 rounded-full flex items-center justify-center"
+        style={{ background: "var(--success-dim)" }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </div>
+    );
+  }
+  return (
+    <div
+      className="w-8 h-8 rounded-full flex items-center justify-center"
+      style={{ background: "var(--error-dim)" }}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </div>
+  );
+}
+
 export default function AdminTicketScanPage() {
   const scannerRef = useRef<HTMLDivElement>(null);
   const html5QrCodeRef = useRef<unknown>(null);
@@ -94,13 +120,22 @@ export default function AdminTicketScanPage() {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">
+      <h2
+        className="text-2xl font-bold mb-6"
+        style={{ color: "var(--admin-text)" }}
+      >
         QRコードスキャン（入場受付）
       </h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div>
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div
+            className="rounded-lg p-4"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
             <div
               id="qr-reader"
               ref={scannerRef}
@@ -112,22 +147,33 @@ export default function AdminTicketScanPage() {
               {!scanning ? (
                 <button
                   onClick={startScanner}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-accent)",
+                    color: "var(--admin-surface)",
+                  }}
                 >
                   カメラでスキャン
                 </button>
               ) : (
                 <button
                   onClick={stopScanner}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-muted)",
+                    color: "var(--admin-surface)",
+                  }}
                 >
                   スキャン停止
                 </button>
               )}
             </div>
 
-            <div className="border-t border-gray-200 pt-4">
-              <p className="text-sm text-gray-600 mb-2">
+            <div className="pt-4" style={{ borderTop: "1px solid var(--admin-border)" }}>
+              <p
+                className="text-[10px] uppercase tracking-widest font-medium mb-2"
+                style={{ color: "var(--admin-muted)" }}
+              >
                 手動でチケットIDを入力
               </p>
               <form onSubmit={handleManualSubmit} className="flex gap-2">
@@ -136,11 +182,20 @@ export default function AdminTicketScanPage() {
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
                   placeholder="チケットIDを入力"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                  style={{
+                    background: "var(--admin-bg)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-accent)",
+                    color: "var(--admin-surface)",
+                  }}
                 >
                   確認
                 </button>
@@ -152,22 +207,19 @@ export default function AdminTicketScanPage() {
         <div>
           {result && (
             <div
-              className={`rounded-lg border p-6 ${
-                result.type === "success"
-                  ? "bg-green-50 border-green-200"
-                  : "bg-red-50 border-red-200"
-              }`}
+              className="rounded-lg p-6"
+              style={{
+                background: result.type === "success" ? "var(--success-dim)" : "var(--error-dim)",
+                border: `1px solid ${result.type === "success" ? "var(--success)" : "var(--error)"}`,
+              }}
             >
-              <div className="flex items-center gap-2 mb-4">
-                <span className="text-2xl">
-                  {result.type === "success" ? "✅" : "❌"}
-                </span>
+              <div className="flex items-center gap-3 mb-4">
+                <StatusIcon type={result.type} />
                 <h3
-                  className={`text-lg font-bold ${
-                    result.type === "success"
-                      ? "text-green-800"
-                      : "text-red-800"
-                  }`}
+                  className="text-lg font-bold"
+                  style={{
+                    color: result.type === "success" ? "var(--success)" : "var(--error)",
+                  }}
                 >
                   {result.type === "success"
                     ? "入場を受け付けました"
@@ -176,40 +228,44 @@ export default function AdminTicketScanPage() {
               </div>
 
               {result.type === "error" && (
-                <p className="text-red-700 mb-4">{result.message}</p>
+                <p className="mb-4" style={{ color: "var(--error)" }}>{result.message}</p>
               )}
 
               {result.ticket && (
                 <div className="space-y-2 text-sm">
                   <p>
-                    <span className="text-gray-600">ユーザー: </span>
-                    <span className="font-medium">
+                    <span style={{ color: "var(--admin-muted)" }}>ユーザー: </span>
+                    <span className="font-medium" style={{ color: "var(--admin-text)" }}>
                       {result.ticket.user.displayName || "未設定"}
                     </span>
                   </p>
                   <p>
-                    <span className="text-gray-600">イベント: </span>
-                    <span className="font-medium">
+                    <span style={{ color: "var(--admin-muted)" }}>イベント: </span>
+                    <span className="font-medium" style={{ color: "var(--admin-text)" }}>
                       {result.ticket.event.title}
                     </span>
                   </p>
                   <p>
-                    <span className="text-gray-600">種別: </span>
-                    <span className="font-medium">
+                    <span style={{ color: "var(--admin-muted)" }}>種別: </span>
+                    <span className="font-medium" style={{ color: "var(--admin-text)" }}>
                       {result.ticket.ticketType.name}
                     </span>
                   </p>
                   <p>
-                    <span className="text-gray-600">日時: </span>
-                    {format(
-                      new Date(result.ticket.event.date),
-                      "yyyy/MM/dd HH:mm",
-                      { locale: ja }
-                    )}
+                    <span style={{ color: "var(--admin-muted)" }}>日時: </span>
+                    <span style={{ color: "var(--admin-text)" }}>
+                      {format(
+                        new Date(result.ticket.event.date),
+                        "yyyy/MM/dd HH:mm",
+                        { locale: ja }
+                      )}
+                    </span>
                   </p>
                   <p>
-                    <span className="text-gray-600">会場: </span>
-                    {result.ticket.event.venue}
+                    <span style={{ color: "var(--admin-muted)" }}>会場: </span>
+                    <span style={{ color: "var(--admin-text)" }}>
+                      {result.ticket.event.venue}
+                    </span>
                   </p>
                 </div>
               )}
@@ -219,7 +275,12 @@ export default function AdminTicketScanPage() {
                   setResult(null);
                   startScanner();
                 }}
-                className="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
+                className="mt-4 px-4 py-2 rounded-lg text-sm transition-all active:scale-[0.97]"
+                style={{
+                  background: "var(--admin-surface)",
+                  border: "1px solid var(--admin-border)",
+                  color: "var(--admin-text)",
+                }}
               >
                 次のスキャン
               </button>
@@ -227,7 +288,14 @@ export default function AdminTicketScanPage() {
           )}
 
           {!result && !scanning && (
-            <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+            <div
+              className="rounded-lg p-6 text-center"
+              style={{
+                background: "var(--admin-surface)",
+                border: "1px solid var(--admin-border)",
+                color: "var(--admin-muted)",
+              }}
+            >
               <p>カメラでQRコードをスキャンするか、</p>
               <p>QRコードの値を手動で入力してください</p>
             </div>

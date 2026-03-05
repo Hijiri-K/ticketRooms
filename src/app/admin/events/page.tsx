@@ -43,26 +43,39 @@ export default function AdminEventsPage() {
   };
 
   if (loading) {
-    return <p className="text-gray-500">読み込み中...</p>;
+    return <p style={{ color: "var(--admin-muted)" }}>読み込み中...</p>;
   }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+        <h2
+          className="text-xl md:text-2xl font-bold"
+          style={{ color: "var(--admin-text)" }}
+        >
           イベント管理
         </h2>
         <Link
           href="/admin/events/new"
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+          className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+          style={{
+            background: "var(--admin-accent)",
+            color: "var(--admin-surface)",
+          }}
         >
           新規作成
         </Link>
       </div>
 
       {events.length === 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <p className="text-gray-500">イベントはまだありません</p>
+        <div
+          className="rounded-lg p-4"
+          style={{
+            background: "var(--admin-surface)",
+            border: "1px solid var(--admin-border)",
+          }}
+        >
+          <p style={{ color: "var(--admin-muted)" }}>イベントはまだありません</p>
         </div>
       ) : (
         <>
@@ -72,23 +85,34 @@ export default function AdminEventsPage() {
               <Link
                 key={event.id}
                 href={`/admin/events/${event.id}`}
-                className="block bg-white rounded-lg border border-gray-200 p-4 transition-shadow hover:shadow-md"
+                className="block rounded-lg p-4 transition-shadow hover:shadow-md"
+                style={{
+                  background: "var(--admin-surface)",
+                  border: "1px solid var(--admin-border)",
+                }}
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <h3 className="font-medium text-gray-900 text-sm">
+                  <h3
+                    className="font-medium text-sm"
+                    style={{ color: "var(--admin-text)" }}
+                  >
                     {event.title}
                   </h3>
                   <span
-                    className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${
-                      event.isPublished
-                        ? "bg-green-100 text-green-700"
-                        : "bg-gray-100 text-gray-600"
-                    }`}
+                    className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+                    style={{
+                      background: event.isPublished
+                        ? "var(--success-dim)"
+                        : "var(--admin-bg)",
+                      color: event.isPublished
+                        ? "var(--success)"
+                        : "var(--admin-muted)",
+                    }}
                   >
                     {event.isPublished ? "公開" : "非公開"}
                   </span>
                 </div>
-                <div className="text-xs text-gray-500 space-y-1">
+                <div className="text-xs space-y-1" style={{ color: "var(--admin-muted)" }}>
                   <p>
                     {format(new Date(event.date), "yyyy/MM/dd HH:mm", {
                       locale: ja,
@@ -105,10 +129,23 @@ export default function AdminEventsPage() {
           </div>
 
           {/* Desktop: table */}
-          <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div
+            className="hidden md:block rounded-lg overflow-hidden"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm text-gray-500 border-b border-gray-200 bg-gray-50">
+                <tr
+                  className="text-left text-[10px] uppercase tracking-widest font-medium"
+                  style={{
+                    color: "var(--admin-muted)",
+                    borderBottom: "1px solid var(--admin-border)",
+                    background: "var(--admin-bg)",
+                  }}
+                >
                   <th className="px-4 py-3">タイトル</th>
                   <th className="px-4 py-3">日時</th>
                   <th className="px-4 py-3">会場</th>
@@ -122,35 +159,43 @@ export default function AdminEventsPage() {
                 {events.map((event) => (
                   <tr
                     key={event.id}
-                    className="border-b border-gray-50 text-sm hover:bg-gray-50"
+                    className="text-sm transition-colors"
+                    style={{ borderBottom: "1px solid var(--admin-border)" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--admin-bg)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
                     <td className="px-4 py-3 font-medium">
                       <Link
                         href={`/admin/events/${event.id}`}
-                        className="text-blue-600 hover:text-blue-800 hover:underline"
+                        className="hover:underline"
+                        style={{ color: "var(--admin-text)" }}
                       >
                         {event.title}
                       </Link>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                       {format(new Date(event.date), "yyyy/MM/dd HH:mm", {
                         locale: ja,
                       })}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{event.venue}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>{event.venue}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--admin-text)" }}>
                       ¥{event.minPrice.toLocaleString()}〜
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3" style={{ color: "var(--admin-text)" }}>
                       {event.totalSold}/{event.totalCapacity}
                     </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          event.isPublished
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
+                        className="px-2 py-1 rounded-full text-xs font-medium"
+                        style={{
+                          background: event.isPublished
+                            ? "var(--success-dim)"
+                            : "var(--admin-bg)",
+                          color: event.isPublished
+                            ? "var(--success)"
+                            : "var(--admin-muted)",
+                        }}
                       >
                         {event.isPublished ? "公開" : "非公開"}
                       </span>
@@ -158,19 +203,22 @@ export default function AdminEventsPage() {
                     <td className="px-4 py-3 space-x-2">
                       <Link
                         href={`/admin/events/${event.id}`}
-                        className="text-blue-600 hover:text-blue-800 text-sm"
+                        className="text-sm hover:underline"
+                        style={{ color: "var(--admin-text)" }}
                       >
                         詳細
                       </Link>
                       <Link
                         href={`/admin/events/${event.id}/edit`}
-                        className="text-blue-600 hover:text-blue-800 text-sm"
+                        className="text-sm hover:underline"
+                        style={{ color: "var(--admin-text)" }}
                       >
                         編集
                       </Link>
                       <button
                         onClick={() => handleDelete(event.id, event.title)}
-                        className="text-red-600 hover:text-red-800 text-sm"
+                        className="text-sm hover:underline"
+                        style={{ color: "var(--error)" }}
                       >
                         削除
                       </button>

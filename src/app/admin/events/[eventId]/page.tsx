@@ -60,11 +60,37 @@ type ScanResult =
   | { type: "success"; ticket: { id: string; user: { displayName: string | null }; ticketType: { name: string } } }
   | { type: "error"; message: string; ticket?: { id: string; user: { displayName: string | null }; ticketType: { name: string } } };
 
-const statusLabels: Record<string, { label: string; color: string }> = {
-  ACTIVE: { label: "有効", color: "bg-green-100 text-green-700" },
-  USED: { label: "入場済", color: "bg-blue-100 text-blue-700" },
-  CANCELLED: { label: "キャンセル", color: "bg-red-100 text-red-700" },
+const statusLabels: Record<string, { label: string; css: { background: string; color: string } }> = {
+  ACTIVE: { label: "有効", css: { background: "var(--success-dim)", color: "var(--success)" } },
+  USED: { label: "入場済", css: { background: "var(--accent-glow)", color: "var(--accent)" } },
+  CANCELLED: { label: "キャンセル", css: { background: "var(--error-dim)", color: "var(--error)" } },
 };
+
+function StatusIcon({ type }: { type: "success" | "error" }) {
+  if (type === "success") {
+    return (
+      <div
+        className="w-8 h-8 rounded-full flex items-center justify-center"
+        style={{ background: "var(--success-dim)" }}
+      >
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--success)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+      </div>
+    );
+  }
+  return (
+    <div
+      className="w-8 h-8 rounded-full flex items-center justify-center"
+      style={{ background: "var(--error-dim)" }}
+    >
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--error)" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </div>
+  );
+}
 
 export default function AdminEventDetailPage() {
   const { eventId } = useParams<{ eventId: string }>();
@@ -202,11 +228,11 @@ export default function AdminEventDetailPage() {
   };
 
   if (loading) {
-    return <p className="text-gray-500">読み込み中...</p>;
+    return <p style={{ color: "var(--admin-muted)" }}>読み込み中...</p>;
   }
 
   if (!event) {
-    return <p className="text-red-600">イベントが見つかりません</p>;
+    return <p style={{ color: "var(--error)" }}>イベントが見つかりません</p>;
   }
 
   const eventDate = new Date(event.date);
@@ -224,25 +250,40 @@ export default function AdminEventDetailPage() {
       <div className="flex items-start justify-between gap-4 mb-6">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <Link href="/admin/events" className="text-sm text-gray-500 hover:text-gray-700">
+            <Link
+              href="/admin/events"
+              className="text-sm hover:underline"
+              style={{ color: "var(--admin-muted)" }}
+            >
               イベント管理
             </Link>
-            <span className="text-gray-300">/</span>
+            <span style={{ color: "var(--admin-border)" }}>/</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-bold text-gray-900">
+          <h2
+            className="text-xl md:text-2xl font-bold"
+            style={{ color: "var(--admin-text)" }}
+          >
             {event.title}
           </h2>
         </div>
         <div className="flex gap-2 shrink-0">
           <Link
             href={`/admin/events/${eventId}/edit`}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+            style={{
+              background: "var(--admin-accent)",
+              color: "var(--admin-surface)",
+            }}
           >
             編集
           </Link>
           <button
             onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+            style={{
+              background: "var(--error)",
+              color: "#fff",
+            }}
           >
             削除
           </button>
@@ -253,21 +294,31 @@ export default function AdminEventDetailPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
         <div className="lg:col-span-2 space-y-4">
           {/* Basic info card */}
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
+          <div
+            className="rounded-lg p-5"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
             <div className="flex items-center gap-2 mb-4">
               <span
-                className={`px-2 py-1 rounded-full text-xs font-medium ${
-                  event.isPublished
-                    ? "bg-green-100 text-green-700"
-                    : "bg-gray-100 text-gray-600"
-                }`}
+                className="px-2 py-1 rounded-full text-xs font-medium"
+                style={{
+                  background: event.isPublished ? "var(--success-dim)" : "var(--admin-bg)",
+                  color: event.isPublished ? "var(--success)" : "var(--admin-muted)",
+                }}
               >
                 {event.isPublished ? "公開" : "非公開"}
               </span>
               {event.tags.map((tag) => (
                 <span
                   key={tag.id}
-                  className="px-2 py-1 rounded-full text-xs font-medium bg-blue-50 text-blue-700"
+                  className="px-2 py-1 rounded-full text-xs font-medium"
+                  style={{
+                    background: "var(--accent-glow)",
+                    color: "var(--accent)",
+                  }}
                 >
                   {tag.name}
                 </span>
@@ -275,23 +326,38 @@ export default function AdminEventDetailPage() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
               <div>
-                <p className="text-gray-500 mb-1">日時</p>
-                <p className="font-medium text-gray-900">
+                <p
+                  className="text-[10px] uppercase tracking-widest font-medium mb-1"
+                  style={{ color: "var(--admin-muted)" }}
+                >
+                  日時
+                </p>
+                <p className="font-medium" style={{ color: "var(--admin-text)" }}>
                   {format(eventDate, "yyyy年M月d日(E) HH:mm", { locale: ja })}
                 </p>
               </div>
               <div>
-                <p className="text-gray-500 mb-1">会場</p>
-                <p className="font-medium text-gray-900">{event.venue}</p>
+                <p
+                  className="text-[10px] uppercase tracking-widest font-medium mb-1"
+                  style={{ color: "var(--admin-muted)" }}
+                >
+                  会場
+                </p>
+                <p className="font-medium" style={{ color: "var(--admin-text)" }}>{event.venue}</p>
                 {event.address && (
-                  <p className="text-xs text-gray-500">{event.address}</p>
+                  <p className="text-xs" style={{ color: "var(--admin-muted)" }}>{event.address}</p>
                 )}
               </div>
             </div>
             {event.description && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="text-sm text-gray-500 mb-1">説明</p>
-                <p className="text-sm text-gray-700 whitespace-pre-wrap line-clamp-3">
+              <div className="mt-4 pt-4" style={{ borderTop: "1px solid var(--admin-border)" }}>
+                <p
+                  className="text-[10px] uppercase tracking-widest font-medium mb-1"
+                  style={{ color: "var(--admin-muted)" }}
+                >
+                  説明
+                </p>
+                <p className="text-sm whitespace-pre-wrap line-clamp-3" style={{ color: "var(--admin-text)" }}>
                   {event.description}
                 </p>
               </div>
@@ -299,29 +365,39 @@ export default function AdminEventDetailPage() {
           </div>
 
           {/* Ticket types card */}
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+          <div
+            className="rounded-lg p-5"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
+            <h3
+              className="text-[10px] uppercase tracking-widest font-medium mb-3"
+              style={{ color: "var(--admin-muted)" }}
+            >
               チケット種別
             </h3>
             <div className="space-y-2">
               {event.ticketTypes.map((tt) => (
                 <div
                   key={tt.id}
-                  className="flex items-center justify-between rounded-lg border border-gray-100 p-3"
+                  className="flex items-center justify-between rounded-lg p-3"
+                  style={{ border: "1px solid var(--admin-border)" }}
                 >
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium" style={{ color: "var(--admin-text)" }}>
                       {tt.name}
                     </p>
                     {tt.description && (
-                      <p className="text-xs text-gray-500">{tt.description}</p>
+                      <p className="text-xs" style={{ color: "var(--admin-muted)" }}>{tt.description}</p>
                     )}
                   </div>
                   <div className="text-right">
-                    <p className="text-sm font-bold text-gray-900">
+                    <p className="text-sm font-bold" style={{ color: "var(--admin-text)" }}>
                       ¥{tt.price.toLocaleString()}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs" style={{ color: "var(--admin-muted)" }}>
                       {tt.soldCount}/{tt.capacity}枚
                     </p>
                   </div>
@@ -333,30 +409,43 @@ export default function AdminEventDetailPage() {
 
         {/* Stats sidebar */}
         <div className="space-y-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-5">
-            <h3 className="text-sm font-semibold text-gray-900 mb-3">
+          <div
+            className="rounded-lg p-5"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
+            <h3
+              className="text-[10px] uppercase tracking-widest font-medium mb-3"
+              style={{ color: "var(--admin-muted)" }}
+            >
               販売状況
             </h3>
             <div className="space-y-3">
               <div>
                 <div className="flex items-center justify-between text-sm mb-1">
-                  <span className="text-gray-500">販売数</span>
-                  <span className="font-bold text-gray-900">
+                  <span style={{ color: "var(--admin-muted)" }}>販売数</span>
+                  <span className="font-bold" style={{ color: "var(--admin-text)" }}>
                     {totalSold}/{totalCapacity}
                   </span>
                 </div>
-                <div className="h-2 rounded-full bg-gray-100 overflow-hidden">
+                <div
+                  className="h-2 rounded-full overflow-hidden"
+                  style={{ background: "var(--admin-bg)" }}
+                >
                   <div
-                    className="h-full rounded-full bg-blue-500 transition-all"
+                    className="h-full rounded-full transition-all"
                     style={{
                       width: `${totalCapacity > 0 ? (totalSold / totalCapacity) * 100 : 0}%`,
+                      background: "var(--admin-text)",
                     }}
                   />
                 </div>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">売上</span>
-                <span className="font-bold text-gray-900">
+                <span style={{ color: "var(--admin-muted)" }}>売上</span>
+                <span className="font-bold" style={{ color: "var(--admin-text)" }}>
                   ¥
                   {event.tickets
                     .reduce((s, t) => s + (t.payment?.amount ?? 0), 0)
@@ -364,8 +453,8 @@ export default function AdminEventDetailPage() {
                 </span>
               </div>
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">入場済</span>
-                <span className="font-bold text-gray-900">
+                <span style={{ color: "var(--admin-muted)" }}>入場済</span>
+                <span className="font-bold" style={{ color: "var(--admin-text)" }}>
                   {event.tickets.filter((t) => t.status === "USED").length}/
                   {event.tickets.length}
                 </span>
@@ -377,11 +466,20 @@ export default function AdminEventDetailPage() {
 
       {/* QR Scanner section */}
       <div className="mb-8">
-        <h3 className="text-lg font-bold text-gray-900 mb-4">
+        <h3
+          className="text-lg font-bold mb-4"
+          style={{ color: "var(--admin-text)" }}
+        >
           入場受付（QRスキャン）
         </h3>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
+          <div
+            className="rounded-lg p-4"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
             <div
               id="qr-reader-detail"
               ref={scannerRef}
@@ -392,32 +490,54 @@ export default function AdminEventDetailPage() {
               {!scanning ? (
                 <button
                   onClick={startScanner}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-accent)",
+                    color: "var(--admin-surface)",
+                  }}
                 >
                   カメラでスキャン
                 </button>
               ) : (
                 <button
                   onClick={stopScanner}
-                  className="px-4 py-2 bg-gray-600 text-white rounded-lg text-sm font-medium hover:bg-gray-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-muted)",
+                    color: "var(--admin-surface)",
+                  }}
                 >
                   スキャン停止
                 </button>
               )}
             </div>
-            <div className="border-t border-gray-200 pt-4">
-              <p className="text-sm text-gray-600 mb-2">手動でチケットIDを入力</p>
+            <div className="pt-4" style={{ borderTop: "1px solid var(--admin-border)" }}>
+              <p
+                className="text-[10px] uppercase tracking-widest font-medium mb-2"
+                style={{ color: "var(--admin-muted)" }}
+              >
+                手動でチケットIDを入力
+              </p>
               <form onSubmit={handleManualSubmit} className="flex gap-2">
                 <input
                   type="text"
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
                   placeholder="チケットIDを入力"
-                  className="flex-1 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="flex-1 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                  style={{
+                    background: "var(--admin-bg)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 />
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700"
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-accent)",
+                    color: "var(--admin-surface)",
+                  }}
                 >
                   確認
                 </button>
@@ -428,22 +548,19 @@ export default function AdminEventDetailPage() {
           <div>
             {scanResult && (
               <div
-                className={`rounded-lg border p-6 ${
-                  scanResult.type === "success"
-                    ? "bg-green-50 border-green-200"
-                    : "bg-red-50 border-red-200"
-                }`}
+                className="rounded-lg p-6"
+                style={{
+                  background: scanResult.type === "success" ? "var(--success-dim)" : "var(--error-dim)",
+                  border: `1px solid ${scanResult.type === "success" ? "var(--success)" : "var(--error)"}`,
+                }}
               >
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-2xl">
-                    {scanResult.type === "success" ? "✅" : "❌"}
-                  </span>
+                <div className="flex items-center gap-3 mb-4">
+                  <StatusIcon type={scanResult.type} />
                   <h4
-                    className={`text-lg font-bold ${
-                      scanResult.type === "success"
-                        ? "text-green-800"
-                        : "text-red-800"
-                    }`}
+                    className="text-lg font-bold"
+                    style={{
+                      color: scanResult.type === "success" ? "var(--success)" : "var(--error)",
+                    }}
                   >
                     {scanResult.type === "success"
                       ? "入場を受け付けました"
@@ -451,19 +568,19 @@ export default function AdminEventDetailPage() {
                   </h4>
                 </div>
                 {scanResult.type === "error" && (
-                  <p className="text-red-700 mb-4">{scanResult.message}</p>
+                  <p className="mb-4" style={{ color: "var(--error)" }}>{scanResult.message}</p>
                 )}
                 {scanResult.ticket && (
                   <div className="space-y-1 text-sm">
                     <p>
-                      <span className="text-gray-600">ユーザー: </span>
-                      <span className="font-medium">
+                      <span style={{ color: "var(--admin-muted)" }}>ユーザー: </span>
+                      <span className="font-medium" style={{ color: "var(--admin-text)" }}>
                         {scanResult.ticket.user.displayName || "未設定"}
                       </span>
                     </p>
                     <p>
-                      <span className="text-gray-600">種別: </span>
-                      <span className="font-medium">
+                      <span style={{ color: "var(--admin-muted)" }}>種別: </span>
+                      <span className="font-medium" style={{ color: "var(--admin-text)" }}>
                         {scanResult.ticket.ticketType.name}
                       </span>
                     </p>
@@ -474,14 +591,26 @@ export default function AdminEventDetailPage() {
                     setScanResult(null);
                     startScanner();
                   }}
-                  className="mt-4 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
+                  className="mt-4 px-4 py-2 rounded-lg text-sm transition-all active:scale-[0.97]"
+                  style={{
+                    background: "var(--admin-surface)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 >
                   次のスキャン
                 </button>
               </div>
             )}
             {!scanResult && !scanning && (
-              <div className="rounded-lg border border-gray-200 bg-white p-6 text-center text-gray-500">
+              <div
+                className="rounded-lg p-6 text-center"
+                style={{
+                  background: "var(--admin-surface)",
+                  border: "1px solid var(--admin-border)",
+                  color: "var(--admin-muted)",
+                }}
+              >
                 <p>カメラでQRコードをスキャンするか、</p>
                 <p>チケットIDを手動入力してください</p>
               </div>
@@ -493,7 +622,10 @@ export default function AdminEventDetailPage() {
       {/* Lottery Results */}
       {event.lotteryPrizes.length > 0 && (
         <div className="mb-8">
-          <h3 className="text-lg font-bold text-gray-900 mb-4">
+          <h3
+            className="text-lg font-bold mb-4"
+            style={{ color: "var(--admin-text)" }}
+          >
             抽選結果
           </h3>
 
@@ -502,24 +634,35 @@ export default function AdminEventDetailPage() {
             {event.lotteryPrizes.map((prize) => (
               <div
                 key={prize.id}
-                className="bg-white rounded-lg border border-gray-200 p-4"
+                className="rounded-lg p-4"
+                style={{
+                  background: "var(--admin-surface)",
+                  border: "1px solid var(--admin-border)",
+                }}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <p className="text-sm font-medium text-gray-900">{prize.name}</p>
+                  <p className="text-sm font-medium" style={{ color: "var(--admin-text)" }}>{prize.name}</p>
                   {prize.requireRedeem && (
-                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-orange-100 text-orange-600">
+                    <span
+                      className="text-[10px] px-1.5 py-0.5 rounded"
+                      style={{ background: "var(--warning-dim)", color: "var(--warning)" }}
+                    >
                       引換要
                     </span>
                   )}
                 </div>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm" style={{ color: "var(--admin-muted)" }}>
                   当選 {prize._count.results}/{prize.stock}
                 </p>
-                <div className="mt-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
+                <div
+                  className="mt-1 h-1.5 rounded-full overflow-hidden"
+                  style={{ background: "var(--admin-bg)" }}
+                >
                   <div
-                    className="h-full rounded-full bg-yellow-500 transition-all"
+                    className="h-full rounded-full transition-all"
                     style={{
                       width: `${prize.stock > 0 ? (prize._count.results / prize.stock) * 100 : 0}%`,
+                      background: "var(--accent)",
                     }}
                   />
                 </div>
@@ -534,18 +677,22 @@ export default function AdminEventDetailPage() {
                 {event.lotteryResults.map((lr) => (
                   <div
                     key={lr.id}
-                    className="bg-white rounded-lg border border-gray-200 p-4"
+                    className="rounded-lg p-4"
+                    style={{
+                      background: "var(--admin-surface)",
+                      border: "1px solid var(--admin-border)",
+                    }}
                   >
                     <div className="flex items-start justify-between gap-2 mb-1">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium" style={{ color: "var(--admin-text)" }}>
                         {lr.user.displayName || "未設定"}
                       </p>
                       <span
-                        className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${
-                          lr.prize
-                            ? "bg-yellow-100 text-yellow-700"
-                            : "bg-gray-100 text-gray-500"
-                        }`}
+                        className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+                        style={{
+                          background: lr.prize ? "var(--accent-glow)" : "var(--admin-bg)",
+                          color: lr.prize ? "var(--accent)" : "var(--admin-muted)",
+                        }}
                       >
                         {lr.prize ? lr.prize.name : "ハズレ"}
                       </span>
@@ -553,11 +700,12 @@ export default function AdminEventDetailPage() {
                     {lr.prize?.requireRedeem && (
                       <div className="mt-2">
                         {lr.redeemed ? (
-                          <span className="text-xs text-gray-500">引き換え済み</span>
+                          <span className="text-xs" style={{ color: "var(--admin-muted)" }}>引き換え済み</span>
                         ) : (
                           <button
                             onClick={() => handleRedeem(lr.id)}
-                            className="px-3 py-1 bg-orange-600 text-white rounded-lg text-xs font-medium hover:bg-orange-700"
+                            className="px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.97]"
+                            style={{ background: "var(--warning)", color: "#fff" }}
                           >
                             引き換え
                           </button>
@@ -568,10 +716,23 @@ export default function AdminEventDetailPage() {
                 ))}
               </div>
 
-              <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-hidden">
+              <div
+                className="hidden md:block rounded-lg overflow-hidden"
+                style={{
+                  background: "var(--admin-surface)",
+                  border: "1px solid var(--admin-border)",
+                }}
+              >
                 <table className="w-full">
                   <thead>
-                    <tr className="text-left text-sm text-gray-500 border-b border-gray-200 bg-gray-50">
+                    <tr
+                      className="text-left text-[10px] uppercase tracking-widest font-medium"
+                      style={{
+                        color: "var(--admin-muted)",
+                        borderBottom: "1px solid var(--admin-border)",
+                        background: "var(--admin-bg)",
+                      }}
+                    >
                       <th className="px-4 py-3">ユーザー</th>
                       <th className="px-4 py-3">結果</th>
                       <th className="px-4 py-3">引き換え</th>
@@ -583,30 +744,33 @@ export default function AdminEventDetailPage() {
                     {event.lotteryResults.map((lr) => (
                       <tr
                         key={lr.id}
-                        className="border-b border-gray-50 text-sm hover:bg-gray-50"
+                        className="text-sm transition-colors"
+                        style={{ borderBottom: "1px solid var(--admin-border)" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--admin-bg)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >
-                        <td className="px-4 py-3 font-medium">
+                        <td className="px-4 py-3 font-medium" style={{ color: "var(--admin-text)" }}>
                           {lr.user.displayName || "未設定"}
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${
-                              lr.prize
-                                ? "bg-yellow-100 text-yellow-700"
-                                : "bg-gray-100 text-gray-500"
-                            }`}
+                            className="px-2 py-1 rounded-full text-xs font-medium"
+                            style={{
+                              background: lr.prize ? "var(--accent-glow)" : "var(--admin-bg)",
+                              color: lr.prize ? "var(--accent)" : "var(--admin-muted)",
+                            }}
                           >
                             {lr.prize ? lr.prize.name : "ハズレ"}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-gray-500">
+                        <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                           {lr.prize?.requireRedeem
                             ? lr.redeemed
                               ? "済"
                               : "未"
                             : "-"}
                         </td>
-                        <td className="px-4 py-3 text-gray-500">
+                        <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                           {format(
                             new Date(lr.createdAt),
                             "MM/dd HH:mm",
@@ -617,7 +781,8 @@ export default function AdminEventDetailPage() {
                           {lr.prize?.requireRedeem && !lr.redeemed && (
                             <button
                               onClick={() => handleRedeem(lr.id)}
-                              className="px-3 py-1 bg-orange-600 text-white rounded-lg text-xs font-medium hover:bg-orange-700"
+                              className="px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.97]"
+                              style={{ background: "var(--warning)", color: "#fff" }}
                             >
                               引き換え
                             </button>
@@ -630,8 +795,14 @@ export default function AdminEventDetailPage() {
               </div>
             </>
           ) : (
-            <div className="bg-white rounded-lg border border-gray-200 p-4">
-              <p className="text-gray-500">まだ抽選結果はありません</p>
+            <div
+              className="rounded-lg p-4"
+              style={{
+                background: "var(--admin-surface)",
+                border: "1px solid var(--admin-border)",
+              }}
+            >
+              <p style={{ color: "var(--admin-muted)" }}>まだ抽選結果はありません</p>
             </div>
           )}
         </div>
@@ -640,9 +811,9 @@ export default function AdminEventDetailPage() {
       {/* Purchasers list */}
       <div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
-          <h3 className="text-lg font-bold text-gray-900">
+          <h3 className="text-lg font-bold" style={{ color: "var(--admin-text)" }}>
             購入者一覧
-            <span className="ml-2 text-sm font-normal text-gray-500">
+            <span className="ml-2 text-sm font-normal" style={{ color: "var(--admin-muted)" }}>
               ({filteredTickets.length}/{event.tickets.length}件)
             </span>
           </h3>
@@ -652,18 +823,35 @@ export default function AdminEventDetailPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="名前で検索..."
-              className="w-full sm:w-64 px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full sm:w-64 px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+              style={{
+                background: "var(--admin-bg)",
+                border: "1px solid var(--admin-border)",
+                color: "var(--admin-text)",
+              }}
             />
           )}
         </div>
 
         {event.tickets.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <p className="text-gray-500">購入者はまだいません</p>
+          <div
+            className="rounded-lg p-4"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
+            <p style={{ color: "var(--admin-muted)" }}>購入者はまだいません</p>
           </div>
         ) : filteredTickets.length === 0 ? (
-          <div className="bg-white rounded-lg border border-gray-200 p-4">
-            <p className="text-gray-500">「{searchQuery}」に一致する購入者はいません</p>
+          <div
+            className="rounded-lg p-4"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
+            <p style={{ color: "var(--admin-muted)" }}>「{searchQuery}」に一致する購入者はいません</p>
           </div>
         ) : (
           <>
@@ -672,24 +860,29 @@ export default function AdminEventDetailPage() {
               {filteredTickets.map((ticket) => {
                 const status = statusLabels[ticket.status] || {
                   label: ticket.status,
-                  color: "bg-gray-100 text-gray-600",
+                  css: { background: "var(--admin-bg)", color: "var(--admin-muted)" },
                 };
                 return (
                   <div
                     key={ticket.id}
-                    className="bg-white rounded-lg border border-gray-200 p-4"
+                    className="rounded-lg p-4"
+                    style={{
+                      background: "var(--admin-surface)",
+                      border: "1px solid var(--admin-border)",
+                    }}
                   >
                     <div className="flex items-start justify-between gap-2 mb-2">
-                      <p className="font-medium text-gray-900 text-sm">
+                      <p className="font-medium text-sm" style={{ color: "var(--admin-text)" }}>
                         {ticket.user.displayName || "未設定"}
                       </p>
                       <span
-                        className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${status.color}`}
+                        className="shrink-0 px-2 py-0.5 rounded-full text-xs font-medium"
+                        style={status.css}
                       >
                         {status.label}
                       </span>
                     </div>
-                    <div className="text-xs text-gray-500 space-y-1">
+                    <div className="text-xs space-y-1" style={{ color: "var(--admin-muted)" }}>
                       <p>{ticket.ticketType.name}</p>
                       <p>
                         ¥{ticket.payment?.amount.toLocaleString()}{" "}
@@ -704,7 +897,8 @@ export default function AdminEventDetailPage() {
                     {ticket.status === "ACTIVE" && (
                       <button
                         onClick={() => handleMarkUsed(ticket.id)}
-                        className="mt-2 px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700"
+                        className="mt-2 px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.97]"
+                        style={{ background: "var(--success)", color: "#fff" }}
                       >
                         入場済みにする
                       </button>
@@ -715,10 +909,23 @@ export default function AdminEventDetailPage() {
             </div>
 
             {/* Desktop: table */}
-            <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-hidden">
+            <div
+              className="hidden md:block rounded-lg overflow-hidden"
+              style={{
+                background: "var(--admin-surface)",
+                border: "1px solid var(--admin-border)",
+              }}
+            >
               <table className="w-full">
                 <thead>
-                  <tr className="text-left text-sm text-gray-500 border-b border-gray-200 bg-gray-50">
+                  <tr
+                    className="text-left text-[10px] uppercase tracking-widest font-medium"
+                    style={{
+                      color: "var(--admin-muted)",
+                      borderBottom: "1px solid var(--admin-border)",
+                      background: "var(--admin-bg)",
+                    }}
+                  >
                     <th className="px-4 py-3">ユーザー</th>
                     <th className="px-4 py-3">チケット種別</th>
                     <th className="px-4 py-3">金額</th>
@@ -731,30 +938,34 @@ export default function AdminEventDetailPage() {
                   {filteredTickets.map((ticket) => {
                     const status = statusLabels[ticket.status] || {
                       label: ticket.status,
-                      color: "bg-gray-100 text-gray-600",
+                      css: { background: "var(--admin-bg)", color: "var(--admin-muted)" },
                     };
                     return (
                       <tr
                         key={ticket.id}
-                        className="border-b border-gray-50 text-sm hover:bg-gray-50"
+                        className="text-sm transition-colors"
+                        style={{ borderBottom: "1px solid var(--admin-border)" }}
+                        onMouseEnter={(e) => (e.currentTarget.style.background = "var(--admin-bg)")}
+                        onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                       >
-                        <td className="px-4 py-3 font-medium">
+                        <td className="px-4 py-3 font-medium" style={{ color: "var(--admin-text)" }}>
                           {ticket.user.displayName || "未設定"}
                         </td>
-                        <td className="px-4 py-3 text-gray-600">
+                        <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                           {ticket.ticketType.name}
                         </td>
-                        <td className="px-4 py-3">
+                        <td className="px-4 py-3" style={{ color: "var(--admin-text)" }}>
                           ¥{ticket.payment?.amount.toLocaleString()}
                         </td>
                         <td className="px-4 py-3">
                           <span
-                            className={`px-2 py-1 rounded-full text-xs font-medium ${status.color}`}
+                            className="px-2 py-1 rounded-full text-xs font-medium"
+                            style={status.css}
                           >
                             {status.label}
                           </span>
                         </td>
-                        <td className="px-4 py-3 text-gray-500">
+                        <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                           {ticket.payment
                             ? format(
                                 new Date(ticket.payment.createdAt),
@@ -767,7 +978,8 @@ export default function AdminEventDetailPage() {
                           {ticket.status === "ACTIVE" && (
                             <button
                               onClick={() => handleMarkUsed(ticket.id)}
-                              className="px-3 py-1 bg-green-600 text-white rounded-lg text-xs font-medium hover:bg-green-700"
+                              className="px-3 py-1 rounded-lg text-xs font-medium transition-all active:scale-[0.97]"
+                              style={{ background: "var(--success)", color: "#fff" }}
                             >
                               入場済みにする
                             </button>

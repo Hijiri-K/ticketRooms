@@ -61,6 +61,12 @@ const defaultTicketType: TicketTypeFormData = {
   capacity: "",
 };
 
+const inputStyle = {
+  background: "var(--admin-bg)",
+  border: "1px solid var(--admin-border)",
+  color: "var(--admin-text)",
+};
+
 export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes, initialLotteryPrizes, eventId }: Props) {
   const router = useRouter();
   const [form, setForm] = useState<EventFormData>(initialData || defaultData);
@@ -169,7 +175,10 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl space-y-4">
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+          style={{ color: "var(--admin-muted)" }}
+        >
           タイトル *
         </label>
         <input
@@ -177,12 +186,16 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
           value={form.title}
           onChange={(e) => update("title", e.target.value)}
           required
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+          style={inputStyle}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+          style={{ color: "var(--admin-muted)" }}
+        >
           説明 *
         </label>
         <textarea
@@ -190,13 +203,17 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
           onChange={(e) => update("description", e.target.value)}
           required
           rows={4}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+          style={inputStyle}
         />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+            style={{ color: "var(--admin-muted)" }}
+          >
             開催日時 *
           </label>
           <input
@@ -204,11 +221,15 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
             value={form.date}
             onChange={(e) => update("date", e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+            style={inputStyle}
           />
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label
+            className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+            style={{ color: "var(--admin-muted)" }}
+          >
             会場 *
           </label>
           <input
@@ -216,55 +237,75 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
             value={form.venue}
             onChange={(e) => update("venue", e.target.value)}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+            style={inputStyle}
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+          style={{ color: "var(--admin-muted)" }}
+        >
           住所
         </label>
         <input
           type="text"
           value={form.address}
           onChange={(e) => update("address", e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+          style={inputStyle}
         />
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label
+          className="block text-[10px] uppercase tracking-widest font-medium mb-1.5"
+          style={{ color: "var(--admin-muted)" }}
+        >
           画像URL
         </label>
         <input
           type="url"
           value={form.imageUrl}
           onChange={(e) => update("imageUrl", e.target.value)}
-          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+          style={inputStyle}
         />
       </div>
 
       {/* Ticket Types */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
+        <label
+          className="block text-[10px] uppercase tracking-widest font-medium mb-2"
+          style={{ color: "var(--admin-muted)" }}
+        >
           チケット種別 *
         </label>
         <div className="space-y-3">
           {ticketTypes.map((tt, index) => (
             <div
               key={index}
-              className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+              className="rounded-lg p-3"
+              style={{
+                background: "var(--admin-bg)",
+                border: "1px solid var(--admin-border)",
+              }}
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-medium text-gray-500">
+                <span
+                  className="text-[10px] uppercase tracking-widest font-medium"
+                  style={{ color: "var(--admin-muted)" }}
+                >
                   種別 {index + 1}
                 </span>
                 {ticketTypes.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeTicketType(index)}
-                    className="text-xs text-red-500 hover:text-red-700"
+                    className="text-xs"
+                    style={{ color: "var(--error)" }}
                   >
                     削除
                   </button>
@@ -277,14 +318,24 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                   onChange={(e) => updateTicketType(index, "name", e.target.value)}
                   placeholder="種別名（例: 一般）"
                   required
-                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                  style={{
+                    background: "var(--admin-surface)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 />
                 <input
                   type="text"
                   value={tt.description}
                   onChange={(e) => updateTicketType(index, "description", e.target.value)}
                   placeholder="説明（任意）"
-                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                  style={{
+                    background: "var(--admin-surface)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 />
               </div>
               <div className="grid grid-cols-2 gap-2">
@@ -295,7 +346,12 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                   placeholder="価格（円）"
                   required
                   min="0"
-                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                  style={{
+                    background: "var(--admin-surface)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 />
                 <input
                   type="number"
@@ -304,7 +360,12 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                   placeholder="定員"
                   required
                   min="1"
-                  className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                  style={{
+                    background: "var(--admin-surface)",
+                    border: "1px solid var(--admin-border)",
+                    color: "var(--admin-text)",
+                  }}
                 />
               </div>
             </div>
@@ -313,7 +374,8 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
         <button
           type="button"
           onClick={addTicketType}
-          className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+          className="mt-2 text-sm hover:underline"
+          style={{ color: "var(--admin-text)" }}
         >
           + チケット種別を追加
         </button>
@@ -327,9 +389,14 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
             id="hasLottery"
             checked={form.hasLottery}
             onChange={(e) => update("hasLottery", e.target.checked)}
-            className="h-4 w-4 text-blue-600 rounded"
+            className="h-4 w-4 rounded"
+            style={{ accentColor: "var(--admin-text)" }}
           />
-          <label htmlFor="hasLottery" className="text-sm font-medium text-gray-700">
+          <label
+            htmlFor="hasLottery"
+            className="text-sm font-medium"
+            style={{ color: "var(--admin-text)" }}
+          >
             無料抽選を有効にする
           </label>
         </div>
@@ -339,16 +406,24 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
             {lotteryPrizes.map((lp, index) => (
               <div
                 key={index}
-                className="rounded-lg border border-gray-200 bg-gray-50 p-3"
+                className="rounded-lg p-3"
+                style={{
+                  background: "var(--admin-bg)",
+                  border: "1px solid var(--admin-border)",
+                }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-medium text-gray-500">
+                  <span
+                    className="text-[10px] uppercase tracking-widest font-medium"
+                    style={{ color: "var(--admin-muted)" }}
+                  >
                     景品 {index + 1}
                   </span>
                   <button
                     type="button"
                     onClick={() => removeLotteryPrize(index)}
-                    className="text-xs text-red-500 hover:text-red-700"
+                    className="text-xs"
+                    style={{ color: "var(--error)" }}
                   >
                     削除
                   </button>
@@ -360,7 +435,12 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                     onChange={(e) => updateLotteryPrize(index, "name", e.target.value)}
                     placeholder="景品名"
                     required
-                    className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      background: "var(--admin-surface)",
+                      border: "1px solid var(--admin-border)",
+                      color: "var(--admin-text)",
+                    }}
                   />
                   <input
                     type="number"
@@ -369,7 +449,12 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                     placeholder="在庫数"
                     required
                     min="1"
-                    className="px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                    style={{
+                      background: "var(--admin-surface)",
+                      border: "1px solid var(--admin-border)",
+                      color: "var(--admin-text)",
+                    }}
                   />
                 </div>
                 <label className="flex items-center gap-2">
@@ -377,9 +462,10 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                     type="checkbox"
                     checked={lp.requireRedeem}
                     onChange={(e) => updateLotteryPrize(index, "requireRedeem", e.target.checked)}
-                    className="h-4 w-4 text-blue-600 rounded"
+                    className="h-4 w-4 rounded"
+                    style={{ accentColor: "var(--admin-text)" }}
                   />
-                  <span className="text-sm text-gray-600">引き換えが必要</span>
+                  <span className="text-sm" style={{ color: "var(--admin-muted)" }}>引き換えが必要</span>
                 </label>
               </div>
             ))}
@@ -389,7 +475,8 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
           <button
             type="button"
             onClick={addLotteryPrize}
-            className="mt-2 text-sm text-blue-600 hover:text-blue-800"
+            className="mt-2 text-sm hover:underline"
+            style={{ color: "var(--admin-text)" }}
           >
             + 景品を追加
           </button>
@@ -398,7 +485,10 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
 
       {allTags.length > 0 && (
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
+          <label
+            className="block text-[10px] uppercase tracking-widest font-medium mb-2"
+            style={{ color: "var(--admin-muted)" }}
+          >
             タグ
           </label>
           <div className="flex flex-wrap gap-2">
@@ -415,11 +505,12 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
                         : [...prev, tag.id]
                     )
                   }
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                    isSelected
-                      ? "bg-blue-50 border-blue-300 text-blue-700"
-                      : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
-                  }`}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm transition-colors active:scale-[0.97]"
+                  style={{
+                    background: isSelected ? "var(--accent-glow)" : "var(--admin-surface)",
+                    border: `1px solid ${isSelected ? "var(--accent)" : "var(--admin-border)"}`,
+                    color: isSelected ? "var(--accent)" : "var(--admin-text)",
+                  }}
                 >
                   {tag.imageUrl && (
                     <img
@@ -442,27 +533,36 @@ export function AdminEventForm({ initialData, initialTagIds, initialTicketTypes,
           id="isPublished"
           checked={form.isPublished}
           onChange={(e) => update("isPublished", e.target.checked)}
-          className="h-4 w-4 text-blue-600 rounded"
+          className="h-4 w-4 rounded"
+          style={{ accentColor: "var(--admin-text)" }}
         />
-        <label htmlFor="isPublished" className="text-sm text-gray-700">
+        <label htmlFor="isPublished" className="text-sm" style={{ color: "var(--admin-text)" }}>
           公開する
         </label>
       </div>
 
-      {error && <p className="text-sm text-red-600">{error}</p>}
+      {error && <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>}
 
       <div className="flex gap-3">
         <button
           type="submit"
           disabled={loading}
-          className="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50"
+          className="px-6 py-2 rounded-lg font-medium transition-all active:scale-[0.97] disabled:opacity-50"
+          style={{
+            background: "var(--admin-accent)",
+            color: "var(--admin-surface)",
+          }}
         >
           {loading ? "保存中..." : isEdit ? "更新" : "作成"}
         </button>
         <button
           type="button"
           onClick={() => router.push("/admin/events")}
-          className="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50"
+          className="px-6 py-2 rounded-lg transition-all active:scale-[0.97]"
+          style={{
+            border: "1px solid var(--admin-border)",
+            color: "var(--admin-text)",
+          }}
         >
           キャンセル
         </button>

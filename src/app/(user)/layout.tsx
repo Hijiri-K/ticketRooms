@@ -1,4 +1,5 @@
 import { LiffProvider } from "@/components/liff-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import { BottomNav } from "@/components/bottom-nav";
 
 export default function UserLayout({
@@ -7,9 +8,16 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <LiffProvider>
-      <div className="pb-16">{children}</div>
-      <BottomNav />
-    </LiffProvider>
+    <ThemeProvider>
+      <LiffProvider>
+        <div
+          className="min-h-screen pb-20"
+          style={{ background: "var(--bg-base)" }}
+        >
+          <div className="anim-fade-in">{children}</div>
+        </div>
+        <BottomNav />
+      </LiffProvider>
+    </ThemeProvider>
   );
 }

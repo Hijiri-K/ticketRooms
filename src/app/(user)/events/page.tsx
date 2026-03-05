@@ -90,39 +90,65 @@ export default function EventsPage() {
   if (loading && events.length === 0) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500" />
+        <div
+          className="h-6 w-6 rounded-full border-2 border-transparent"
+          style={{
+            borderTopColor: "var(--accent)",
+            animation: "spin-slow 0.8s linear infinite",
+          }}
+        />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 px-4 py-6">
+    <div className="min-h-screen px-5 py-8">
       <div className="mx-auto max-w-md">
-        <h1 className="mb-4 text-2xl font-bold text-gray-900">イベント</h1>
+        <h1
+          className="mb-6 text-3xl font-light tracking-tight anim-fade-up"
+          style={{ color: "var(--text-primary)", letterSpacing: "-0.02em" }}
+        >
+          EVENTS
+        </h1>
 
         {/* Tag filter */}
         {tags.length > 0 && (
-          <div className="mb-4 -mx-4 px-4">
+          <div className="mb-6 -mx-5 px-5 anim-fade-up" style={{ animationDelay: "60ms" }}>
             <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
               <button
                 onClick={() => handleTagSelect(null)}
                 className="flex flex-col items-center gap-1 flex-shrink-0"
               >
                 <div
-                  className={`flex h-16 w-16 items-center justify-center rounded-full border-2 transition-colors ${
-                    selectedTagId === null
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 bg-gray-100"
-                  }`}
+                  className="flex h-14 w-14 items-center justify-center rounded-full transition-all duration-200"
+                  style={{
+                    border: `1.5px solid ${
+                      selectedTagId === null
+                        ? "var(--accent)"
+                        : "var(--border)"
+                    }`,
+                    background:
+                      selectedTagId === null
+                        ? "var(--accent-glow)"
+                        : "var(--bg-surface)",
+                  }}
                 >
-                  <span className="text-lg">ALL</span>
+                  <span
+                    className="text-[10px] font-medium uppercase tracking-widest"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    ALL
+                  </span>
                 </div>
                 <span
-                  className={`text-xs ${
-                    selectedTagId === null
-                      ? "font-bold text-gray-900"
-                      : "text-gray-500"
-                  }`}
+                  className="text-[10px] tracking-wide"
+                  style={{
+                    color:
+                      selectedTagId === null
+                        ? "var(--accent)"
+                        : "var(--text-muted)",
+                    fontWeight: selectedTagId === null ? 500 : 400,
+                  }}
                 >
                   すべて
                 </span>
@@ -138,12 +164,13 @@ export default function EventsPage() {
                     className="flex flex-col items-center gap-1 flex-shrink-0"
                   >
                     <div
-                      className={`h-16 w-16 rounded-full border-2 overflow-hidden transition-colors ${
-                        isSelected
-                          ? "border-blue-500"
-                          : "border-transparent"
-                      }`}
-                      style={{ padding: isSelected ? "2px" : "0" }}
+                      className="h-14 w-14 rounded-full overflow-hidden transition-all duration-200"
+                      style={{
+                        border: `1.5px solid ${
+                          isSelected ? "var(--accent)" : "var(--border)"
+                        }`,
+                        padding: isSelected ? "2px" : "0",
+                      }}
                     >
                       {tag.imageUrl ? (
                         <img
@@ -152,17 +179,25 @@ export default function EventsPage() {
                           className="h-full w-full rounded-full object-contain"
                         />
                       ) : (
-                        <div className="flex h-full w-full items-center justify-center rounded-full bg-gray-200 text-gray-500 text-xs">
+                        <div
+                          className="flex h-full w-full items-center justify-center rounded-full text-[10px]"
+                          style={{
+                            background: "var(--bg-elevated)",
+                            color: "var(--text-muted)",
+                          }}
+                        >
                           {tag.name.slice(0, 2)}
                         </div>
                       )}
                     </div>
                     <span
-                      className={`text-xs max-w-[64px] truncate ${
-                        isSelected
-                          ? "font-bold text-gray-900"
-                          : "text-gray-500"
-                      }`}
+                      className="text-[10px] max-w-[56px] truncate tracking-wide"
+                      style={{
+                        color: isSelected
+                          ? "var(--accent)"
+                          : "var(--text-muted)",
+                        fontWeight: isSelected ? 500 : 400,
+                      }}
                     >
                       {tag.name}
                     </span>
@@ -174,36 +209,56 @@ export default function EventsPage() {
         )}
 
         {events.length === 0 ? (
-          <p className="text-center text-gray-500">
+          <p style={{ color: "var(--text-muted)" }} className="text-center text-sm">
             {selectedTagId
               ? "このタグのイベントはありません"
               : "現在公開中のイベントはありません"}
           </p>
         ) : (
-          <div className="space-y-6">
-            {groupEventsByDate(events).map(({ label, sublabel, events: grouped }) => (
-              <section key={label}>
-                <div className="mb-3 flex items-center gap-3">
-                  <div className="flex flex-col">
-                    <span className="text-base font-bold text-gray-900">
-                      {label}
+          <div className="space-y-8">
+            {groupEventsByDate(events).map(
+              ({ label, sublabel, events: grouped }, index) => (
+                <section
+                  key={label}
+                  className="anim-fade-up"
+                  style={{ animationDelay: `${(index + 1) * 80}ms` }}
+                >
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex flex-col">
+                      <span
+                        className="text-xs font-medium uppercase tracking-widest"
+                        style={{ color: "var(--text-secondary)" }}
+                      >
+                        {label}
+                      </span>
+                      {sublabel && (
+                        <span
+                          className="text-[10px]"
+                          style={{ color: "var(--text-muted)" }}
+                        >
+                          {sublabel}
+                        </span>
+                      )}
+                    </div>
+                    <div
+                      className="h-px flex-1"
+                      style={{ background: "var(--border)" }}
+                    />
+                    <span
+                      className="text-[10px] tracking-widest uppercase"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      {grouped.length}件
                     </span>
-                    {sublabel && (
-                      <span className="text-xs text-gray-400">{sublabel}</span>
-                    )}
                   </div>
-                  <div className="h-px flex-1 bg-gray-200" />
-                  <span className="text-xs text-gray-400">
-                    {grouped.length}件
-                  </span>
-                </div>
-                <div className="space-y-3">
-                  {grouped.map((event) => (
-                    <EventCard key={event.id} {...event} />
-                  ))}
-                </div>
-              </section>
-            ))}
+                  <div className="stagger-children space-y-3">
+                    {grouped.map((event) => (
+                      <EventCard key={event.id} {...event} />
+                    ))}
+                  </div>
+                </section>
+              )
+            )}
           </div>
         )}
       </div>

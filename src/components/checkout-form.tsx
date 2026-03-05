@@ -43,11 +43,15 @@ export function CheckoutForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <PaymentElement />
-      {error && <p className="text-sm text-red-500">{error}</p>}
+      {error && <p className="text-sm" style={{ color: "var(--error)" }}>{error}</p>}
       <button
         type="submit"
         disabled={!stripe || processing}
-        className="w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 disabled:opacity-50"
+        className="w-full rounded-lg px-4 py-3 font-medium transition-all active:scale-[0.97] disabled:opacity-50"
+        style={{
+          background: "var(--accent)",
+          color: "var(--btn-on-accent)",
+        }}
       >
         {processing ? "処理中..." : "支払う"}
       </button>

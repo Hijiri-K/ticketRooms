@@ -22,7 +22,16 @@ interface LotteryPrizeData {
 export default function AdminEditEventPage() {
   const params = useParams();
   const eventId = params.eventId as string;
-  const [initialData, setInitialData] = useState(null);
+  const [initialData, setInitialData] = useState<{
+    title: string;
+    description: string;
+    date: string;
+    venue: string;
+    address: string;
+    imageUrl: string;
+    isPublished: boolean;
+    hasLottery: boolean;
+  } | null>(null);
   const [initialTagIds, setInitialTagIds] = useState<string[]>([]);
   const [initialTicketTypes, setInitialTicketTypes] = useState<
     { id: string; name: string; description: string; price: string; capacity: string }[]
@@ -79,16 +88,21 @@ export default function AdminEditEventPage() {
   }, [eventId]);
 
   if (loading) {
-    return <p className="text-gray-500">読み込み中...</p>;
+    return <p style={{ color: "var(--admin-muted)" }}>読み込み中...</p>;
   }
 
   if (!initialData) {
-    return <p className="text-red-600">イベントが見つかりません</p>;
+    return <p style={{ color: "var(--error)" }}>イベントが見つかりません</p>;
   }
 
   return (
     <div>
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">イベント編集</h2>
+      <h2
+        className="text-2xl font-bold mb-6"
+        style={{ color: "var(--admin-text)" }}
+      >
+        イベント編集
+      </h2>
       <AdminEventForm
         initialData={initialData}
         initialTagIds={initialTagIds}

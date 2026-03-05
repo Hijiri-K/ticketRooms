@@ -28,18 +28,27 @@ export default function AdminUsersPage() {
   }, []);
 
   if (loading) {
-    return <p className="text-gray-500">読み込み中...</p>;
+    return <p style={{ color: "var(--admin-muted)" }}>読み込み中...</p>;
   }
 
   return (
     <div>
-      <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+      <h2
+        className="text-xl md:text-2xl font-bold mb-6"
+        style={{ color: "var(--admin-text)" }}
+      >
         ユーザー一覧
       </h2>
 
       {users.length === 0 ? (
-        <div className="bg-white rounded-lg border border-gray-200 p-4">
-          <p className="text-gray-500">ユーザーはまだいません</p>
+        <div
+          className="rounded-lg p-4"
+          style={{
+            background: "var(--admin-surface)",
+            border: "1px solid var(--admin-border)",
+          }}
+        >
+          <p style={{ color: "var(--admin-muted)" }}>ユーザーはまだいません</p>
         </div>
       ) : (
         <>
@@ -48,30 +57,37 @@ export default function AdminUsersPage() {
             {users.map((user) => (
               <div
                 key={user.id}
-                className="bg-white rounded-lg border border-gray-200 p-4"
+                className="rounded-lg p-4"
+                style={{
+                  background: "var(--admin-surface)",
+                  border: "1px solid var(--admin-border)",
+                }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <p className="font-medium text-gray-900 text-sm">
+                  <p className="font-medium text-sm" style={{ color: "var(--admin-text)" }}>
                     {user.displayName || "未設定"}
                   </p>
                   <div className="flex gap-1">
                     <span
-                      className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                        user.isRegistered
-                          ? "bg-green-100 text-green-700"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
+                      className="px-2 py-0.5 rounded-full text-xs font-medium"
+                      style={{
+                        background: user.isRegistered ? "var(--success-dim)" : "var(--admin-bg)",
+                        color: user.isRegistered ? "var(--success)" : "var(--admin-muted)",
+                      }}
                     >
                       {user.isRegistered ? "登録済" : "未登録"}
                     </span>
                     {user.isFriend && (
-                      <span className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700">
+                      <span
+                        className="px-2 py-0.5 rounded-full text-xs font-medium"
+                        style={{ background: "var(--success-dim)", color: "var(--success)" }}
+                      >
                         友だち
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="text-xs text-gray-500 space-y-1">
+                <div className="text-xs space-y-1" style={{ color: "var(--admin-muted)" }}>
                   <p>
                     {user.prefecture || "-"} ・ チケット{user._count.tickets}枚
                   </p>
@@ -86,10 +102,23 @@ export default function AdminUsersPage() {
           </div>
 
           {/* Desktop: table */}
-          <div className="hidden md:block bg-white rounded-lg border border-gray-200 overflow-hidden">
+          <div
+            className="hidden md:block rounded-lg overflow-hidden"
+            style={{
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
+            }}
+          >
             <table className="w-full">
               <thead>
-                <tr className="text-left text-sm text-gray-500 border-b border-gray-200 bg-gray-50">
+                <tr
+                  className="text-left text-[10px] uppercase tracking-widest font-medium"
+                  style={{
+                    color: "var(--admin-muted)",
+                    borderBottom: "1px solid var(--admin-border)",
+                    background: "var(--admin-bg)",
+                  }}
+                >
                   <th className="px-4 py-3">表示名</th>
                   <th className="px-4 py-3">LINE ID</th>
                   <th className="px-4 py-3">登録</th>
@@ -103,41 +132,44 @@ export default function AdminUsersPage() {
                 {users.map((user) => (
                   <tr
                     key={user.id}
-                    className="border-b border-gray-50 text-sm hover:bg-gray-50"
+                    className="text-sm transition-colors"
+                    style={{ borderBottom: "1px solid var(--admin-border)" }}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = "var(--admin-bg)")}
+                    onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                   >
-                    <td className="px-4 py-3 font-medium">
+                    <td className="px-4 py-3 font-medium" style={{ color: "var(--admin-text)" }}>
                       {user.displayName || "未設定"}
                     </td>
-                    <td className="px-4 py-3 font-mono text-xs text-gray-600">
+                    <td className="px-4 py-3 font-mono text-xs" style={{ color: "var(--admin-muted)" }}>
                       {user.lineUserId.slice(0, 10)}...
                     </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          user.isRegistered
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
+                        className="px-2 py-1 rounded-full text-xs font-medium"
+                        style={{
+                          background: user.isRegistered ? "var(--success-dim)" : "var(--admin-bg)",
+                          color: user.isRegistered ? "var(--success)" : "var(--admin-muted)",
+                        }}
                       >
                         {user.isRegistered ? "済" : "未"}
                       </span>
                     </td>
                     <td className="px-4 py-3">
                       <span
-                        className={`px-2 py-1 rounded-full text-xs font-medium ${
-                          user.isFriend
-                            ? "bg-green-100 text-green-700"
-                            : "bg-gray-100 text-gray-600"
-                        }`}
+                        className="px-2 py-1 rounded-full text-xs font-medium"
+                        style={{
+                          background: user.isFriend ? "var(--success-dim)" : "var(--admin-bg)",
+                          color: user.isFriend ? "var(--success)" : "var(--admin-muted)",
+                        }}
                       >
                         {user.isFriend ? "友だち" : "-"}
                       </span>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">
+                    <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                       {user.prefecture || "-"}
                     </td>
-                    <td className="px-4 py-3">{user._count.tickets}</td>
-                    <td className="px-4 py-3 text-gray-500">
+                    <td className="px-4 py-3" style={{ color: "var(--admin-text)" }}>{user._count.tickets}</td>
+                    <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>
                       {format(new Date(user.createdAt), "yyyy/MM/dd", {
                         locale: ja,
                       })}

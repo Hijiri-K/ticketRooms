@@ -81,24 +81,39 @@ export default function AdminTagsPage() {
   };
 
   if (loading) {
-    return <p className="text-gray-500">読み込み中...</p>;
+    return <p style={{ color: "var(--admin-muted)" }}>読み込み中...</p>;
   }
 
   return (
     <div>
-      <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
+      <h2
+        className="text-xl md:text-2xl font-bold mb-6"
+        style={{ color: "var(--admin-text)" }}
+      >
         タグ管理
       </h2>
 
       {/* Create / Edit form */}
-      <div className="bg-white rounded-lg border border-gray-200 p-4 mb-6">
-        <h3 className="font-semibold text-gray-900 text-sm mb-3">
+      <div
+        className="rounded-lg p-4 mb-6"
+        style={{
+          background: "var(--admin-surface)",
+          border: "1px solid var(--admin-border)",
+        }}
+      >
+        <h3
+          className="text-[10px] uppercase tracking-widest font-medium mb-3"
+          style={{ color: "var(--admin-muted)" }}
+        >
           {editingId ? "タグを編集" : "新しいタグを作成"}
         </h3>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
+              <label
+                className="block text-[10px] uppercase tracking-widest font-medium mb-1"
+                style={{ color: "var(--admin-muted)" }}
+              >
                 タグ名 *
               </label>
               <input
@@ -106,12 +121,20 @@ export default function AdminTagsPage() {
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
                 placeholder="例: 音楽"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                style={{
+                  background: "var(--admin-bg)",
+                  border: "1px solid var(--admin-border)",
+                  color: "var(--admin-text)",
+                }}
                 required
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
+              <label
+                className="block text-[10px] uppercase tracking-widest font-medium mb-1"
+                style={{ color: "var(--admin-muted)" }}
+              >
                 画像URL
               </label>
               <input
@@ -119,11 +142,19 @@ export default function AdminTagsPage() {
                 value={form.imageUrl}
                 onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
                 placeholder="https://..."
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                style={{
+                  background: "var(--admin-bg)",
+                  border: "1px solid var(--admin-border)",
+                  color: "var(--admin-text)",
+                }}
               />
             </div>
             <div>
-              <label className="block text-xs text-gray-600 mb-1">
+              <label
+                className="block text-[10px] uppercase tracking-widest font-medium mb-1"
+                style={{ color: "var(--admin-muted)" }}
+              >
                 並び順
               </label>
               <input
@@ -132,7 +163,12 @@ export default function AdminTagsPage() {
                 onChange={(e) =>
                   setForm({ ...form, sortOrder: e.target.value })
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 rounded-lg text-sm focus:outline-none focus:ring-2"
+                style={{
+                  background: "var(--admin-bg)",
+                  border: "1px solid var(--admin-border)",
+                  color: "var(--admin-text)",
+                }}
               />
             </div>
           </div>
@@ -140,7 +176,11 @@ export default function AdminTagsPage() {
             <button
               type="submit"
               disabled={saving}
-              className="px-4 py-2 bg-blue-600 text-white rounded-lg text-sm font-medium hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 rounded-lg text-sm font-medium transition-all active:scale-[0.97] disabled:opacity-50"
+              style={{
+                background: "var(--admin-accent)",
+                color: "var(--admin-surface)",
+              }}
             >
               {saving
                 ? "保存中..."
@@ -152,7 +192,11 @@ export default function AdminTagsPage() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-sm hover:bg-gray-50"
+                className="px-4 py-2 rounded-lg text-sm transition-all active:scale-[0.97]"
+                style={{
+                  border: "1px solid var(--admin-border)",
+                  color: "var(--admin-text)",
+                }}
               >
                 キャンセル
               </button>
@@ -163,13 +207,23 @@ export default function AdminTagsPage() {
 
       {/* Tag list */}
       {tags.length === 0 ? (
-        <p className="text-gray-500 text-sm">タグはまだありません</p>
+        <p className="text-sm" style={{ color: "var(--admin-muted)" }}>タグはまだありません</p>
       ) : (
-        <div className="bg-white rounded-lg border border-gray-200">
+        <div
+          className="rounded-lg"
+          style={{
+            background: "var(--admin-surface)",
+            border: "1px solid var(--admin-border)",
+          }}
+        >
           {/* Mobile: cards */}
-          <div className="divide-y divide-gray-100 md:hidden">
-            {tags.map((tag) => (
-              <div key={tag.id} className="p-4">
+          <div className="md:hidden" style={{ borderColor: "var(--admin-border)" }}>
+            {tags.map((tag, i) => (
+              <div
+                key={tag.id}
+                className="p-4"
+                style={i > 0 ? { borderTop: "1px solid var(--admin-border)" } : undefined}
+              >
                 <div className="flex items-center gap-3 mb-2">
                   {tag.imageUrl ? (
                     <img
@@ -178,15 +232,18 @@ export default function AdminTagsPage() {
                       className="h-10 w-10 rounded-full object-cover"
                     />
                   ) : (
-                    <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+                    <div
+                      className="h-10 w-10 rounded-full flex items-center justify-center text-xs"
+                      style={{ background: "var(--admin-bg)", color: "var(--admin-muted)" }}
+                    >
                       No img
                     </div>
                   )}
                   <div>
-                    <p className="text-sm font-medium text-gray-900">
+                    <p className="text-sm font-medium" style={{ color: "var(--admin-text)" }}>
                       {tag.name}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs" style={{ color: "var(--admin-muted)" }}>
                       並び順: {tag.sortOrder}
                     </p>
                   </div>
@@ -194,13 +251,15 @@ export default function AdminTagsPage() {
                 <div className="flex gap-2">
                   <button
                     onClick={() => startEdit(tag)}
-                    className="text-xs text-blue-600"
+                    className="text-xs hover:underline"
+                    style={{ color: "var(--admin-text)" }}
                   >
                     編集
                   </button>
                   <button
                     onClick={() => handleDelete(tag.id)}
-                    className="text-xs text-red-600"
+                    className="text-xs hover:underline"
+                    style={{ color: "var(--error)" }}
                   >
                     削除
                   </button>
@@ -212,7 +271,13 @@ export default function AdminTagsPage() {
           {/* Desktop: table */}
           <table className="w-full hidden md:table">
             <thead>
-              <tr className="text-left text-sm text-gray-500 border-b border-gray-100">
+              <tr
+                className="text-left text-[10px] uppercase tracking-widest font-medium"
+                style={{
+                  color: "var(--admin-muted)",
+                  borderBottom: "1px solid var(--admin-border)",
+                }}
+              >
                 <th className="px-4 py-3">画像</th>
                 <th className="px-4 py-3">タグ名</th>
                 <th className="px-4 py-3">並び順</th>
@@ -223,7 +288,10 @@ export default function AdminTagsPage() {
               {tags.map((tag) => (
                 <tr
                   key={tag.id}
-                  className="border-b border-gray-50 text-sm"
+                  className="text-sm transition-colors"
+                  style={{ borderBottom: "1px solid var(--admin-border)" }}
+                  onMouseEnter={(e) => (e.currentTarget.style.background = "var(--admin-bg)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.background = "transparent")}
                 >
                   <td className="px-4 py-3">
                     {tag.imageUrl ? (
@@ -233,23 +301,28 @@ export default function AdminTagsPage() {
                         className="h-10 w-10 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 text-xs">
+                      <div
+                        className="h-10 w-10 rounded-full flex items-center justify-center text-xs"
+                        style={{ background: "var(--admin-bg)", color: "var(--admin-muted)" }}
+                      >
                         No img
                       </div>
                     )}
                   </td>
-                  <td className="px-4 py-3 font-medium">{tag.name}</td>
-                  <td className="px-4 py-3 text-gray-500">{tag.sortOrder}</td>
+                  <td className="px-4 py-3 font-medium" style={{ color: "var(--admin-text)" }}>{tag.name}</td>
+                  <td className="px-4 py-3" style={{ color: "var(--admin-muted)" }}>{tag.sortOrder}</td>
                   <td className="px-4 py-3">
                     <button
                       onClick={() => startEdit(tag)}
-                      className="text-blue-600 hover:underline text-sm mr-3"
+                      className="hover:underline text-sm mr-3"
+                      style={{ color: "var(--admin-text)" }}
                     >
                       編集
                     </button>
                     <button
                       onClick={() => handleDelete(tag.id)}
-                      className="text-red-600 hover:underline text-sm"
+                      className="hover:underline text-sm"
+                      style={{ color: "var(--error)" }}
                     >
                       削除
                     </button>

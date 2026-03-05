@@ -51,7 +51,13 @@ export default function EventDetailPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-gray-300 border-t-blue-500" />
+        <div
+          className="h-6 w-6 rounded-full border-2 border-transparent"
+          style={{
+            borderTopColor: "var(--accent)",
+            animation: "spin-slow 0.8s linear infinite",
+          }}
+        />
       </div>
     );
   }
@@ -59,65 +65,139 @@ export default function EventDetailPage() {
   if (!event) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <p className="text-gray-500">イベントが見つかりません</p>
+        <p style={{ color: "var(--text-muted)" }}>イベントが見つかりません</p>
       </div>
     );
   }
 
   const eventDate = new Date(event.date);
-  const selectedType = event.ticketTypes.find((tt) => tt.id === selectedTypeId);
-  const allSoldOut = event.ticketTypes.every((tt) => tt.capacity - tt.soldCount <= 0);
+  const selectedType = event.ticketTypes.find(
+    (tt) => tt.id === selectedTypeId
+  );
+  const allSoldOut = event.ticketTypes.every(
+    (tt) => tt.capacity - tt.soldCount <= 0
+  );
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {event.imageUrl && (
-        <div className="aspect-video w-full overflow-hidden bg-gray-100">
-          <img
-            src={event.imageUrl}
-            alt={event.title}
-            className="h-full w-full object-cover"
-          />
-        </div>
-      )}
-
-      <div className="px-4 py-6">
-        <div className="mx-auto max-w-md">
+    <div className="min-h-screen">
+      {/* Hero */}
+      <div className="relative">
+        {event.imageUrl ? (
+          <div className="aspect-[4/3] w-full overflow-hidden">
+            <img
+              src={event.imageUrl}
+              alt={event.title}
+              className="h-full w-full object-cover"
+            />
+            <div
+              className="absolute inset-0"
+              style={{
+                background: "var(--hero-overlay)",
+              }}
+            />
+          </div>
+        ) : (
+          <div
+            className="aspect-[4/3] w-full"
+            style={{
+              background: "var(--no-image-gradient)",
+            }}
+          >
+            <div className="absolute inset-0 opacity-10">
+              <div
+                className="absolute left-0 top-1/3 h-px w-full"
+                style={{ background: "var(--accent)" }}
+              />
+              <div
+                className="absolute right-1/4 top-0 h-full w-px"
+                style={{ background: "var(--accent)" }}
+              />
+            </div>
+          </div>
+        )}
+        <div className="absolute bottom-0 left-0 right-0 p-5">
           {event.hasLottery && (
-            <span className="mb-2 inline-block rounded-full bg-yellow-100 px-2.5 py-0.5 text-xs font-bold text-yellow-700">
+            <span
+              className="mb-2 inline-block text-[10px] uppercase tracking-widest"
+              style={{ color: "#d4b87a" }}
+            >
               無料抽選あり
             </span>
           )}
-          <h1 className="mb-2 text-2xl font-bold text-gray-900">
+          <h1
+            className="text-2xl font-light leading-tight anim-fade-up"
+            style={{ color: "#ffffff" }}
+          >
             {event.title}
           </h1>
+        </div>
+      </div>
 
-          <div className="mb-4 space-y-2">
-            <div className="flex items-start gap-2 text-sm text-gray-600">
-              <span className="shrink-0 font-medium">日時</span>
-              <span>
+      <div className="px-5 py-6">
+        <div className="mx-auto max-w-md">
+          {/* Info */}
+          <div className="mb-5 space-y-3 anim-fade-up" style={{ animationDelay: "60ms" }}>
+            <div className="flex items-start gap-3">
+              <span
+                className="w-10 shrink-0 text-[10px] font-medium uppercase tracking-widest pt-0.5"
+                style={{ color: "var(--text-muted)" }}
+              >
+                DATE
+              </span>
+              <span
+                className="text-sm font-light"
+                style={{ color: "var(--text-primary)" }}
+              >
                 {format(eventDate, "yyyy年M月d日(E) HH:mm", { locale: ja })}
               </span>
             </div>
-            <div className="flex items-start gap-2 text-sm text-gray-600">
-              <span className="shrink-0 font-medium">会場</span>
-              <span>{event.venue}</span>
+            <div className="flex items-start gap-3">
+              <span
+                className="w-10 shrink-0 text-[10px] font-medium uppercase tracking-widest pt-0.5"
+                style={{ color: "var(--text-muted)" }}
+              >
+                VENUE
+              </span>
+              <span
+                className="text-sm font-light"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {event.venue}
+              </span>
             </div>
             {event.address && (
-              <div className="flex items-start gap-2 text-sm text-gray-600">
-                <span className="shrink-0 font-medium">住所</span>
-                <span>{event.address}</span>
+              <div className="flex items-start gap-3">
+                <span
+                  className="w-10 shrink-0 text-[10px] font-medium uppercase tracking-widest pt-0.5"
+                  style={{ color: "var(--text-muted)" }}
+                >
+                  ADDR
+                </span>
+                <span
+                  className="text-sm font-light"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {event.address}
+                </span>
               </div>
             )}
           </div>
 
-          <div className="mb-6 whitespace-pre-wrap text-sm leading-relaxed text-gray-700">
+          {/* Description */}
+          <div
+            className="mb-6 whitespace-pre-wrap text-sm font-light leading-relaxed anim-fade-up"
+            style={{ color: "var(--text-secondary)", animationDelay: "120ms" }}
+          >
             {event.description}
           </div>
 
-          {/* Ticket type selection */}
-          <div className="mb-4">
-            <h2 className="mb-2 text-sm font-medium text-gray-700">
-              チケットを選択
+          {/* Ticket types */}
+          <div className="mb-4 anim-fade-up" style={{ animationDelay: "180ms" }}>
+            <h2
+              className="mb-3 text-[10px] font-medium uppercase tracking-widest"
+              style={{ color: "var(--text-muted)" }}
+            >
+              TICKETS
             </h2>
             <div className="space-y-2">
               {event.ticketTypes.map((tt) => {
@@ -131,35 +211,57 @@ export default function EventDetailPage() {
                     type="button"
                     disabled={isSoldOut}
                     onClick={() => setSelectedTypeId(tt.id)}
-                    className={`w-full rounded-xl border-2 p-3 text-left transition-colors ${
-                      isSelected
-                        ? "border-blue-500 bg-blue-50"
-                        : isSoldOut
-                          ? "border-gray-200 bg-gray-50 opacity-60"
-                          : "border-gray-200 bg-white hover:border-gray-300"
-                    }`}
+                    className="w-full rounded-xl p-3 text-left transition-all duration-200 active:scale-[0.98]"
+                    style={{
+                      background: isSelected
+                        ? "var(--accent-glow)"
+                        : "var(--bg-surface)",
+                      border: `1.5px solid ${
+                        isSelected ? "var(--accent)" : "var(--border)"
+                      }`,
+                      opacity: isSoldOut ? 0.5 : 1,
+                    }}
                   >
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-semibold text-gray-900">
+                        <p
+                          className="text-sm font-medium"
+                          style={{ color: "var(--text-primary)" }}
+                        >
                           {tt.name}
                         </p>
                         {tt.description && (
-                          <p className="text-xs text-gray-500">
+                          <p
+                            className="text-xs"
+                            style={{ color: "var(--text-muted)" }}
+                          >
                             {tt.description}
                           </p>
                         )}
                       </div>
                       <div className="text-right">
-                        <p className="text-base font-bold text-gray-900">
+                        <p
+                          className="text-base font-light"
+                          style={{
+                            color: isSelected
+                              ? "var(--accent)"
+                              : "var(--text-primary)",
+                          }}
+                        >
                           ¥{tt.price.toLocaleString()}
                         </p>
                         {isSoldOut ? (
-                          <p className="text-xs font-medium text-red-600">
+                          <p
+                            className="text-[10px] font-medium uppercase tracking-widest"
+                            style={{ color: "var(--error)" }}
+                          >
                             SOLD OUT
                           </p>
                         ) : (
-                          <p className="text-xs text-gray-500">
+                          <p
+                            className="text-[10px]"
+                            style={{ color: "var(--text-muted)" }}
+                          >
                             残り {remaining} 枚
                           </p>
                         )}
@@ -171,7 +273,16 @@ export default function EventDetailPage() {
             </div>
           </div>
 
-          <div className="sticky bottom-0 -mx-4 border-t border-gray-200 bg-white px-4 py-4">
+          {/* Sticky buy bar */}
+          <div
+            className="sticky bottom-0 -mx-5 px-5 py-4"
+            style={{
+              background: "var(--nav-bg)",
+              borderTop: "1px solid var(--border)",
+              backdropFilter: "blur(20px) saturate(180%)",
+              WebkitBackdropFilter: "blur(20px) saturate(180%)",
+            }}
+          >
             <button
               onClick={() =>
                 router.push(
@@ -179,7 +290,17 @@ export default function EventDetailPage() {
                 )
               }
               disabled={allSoldOut || !selectedType}
-              className="w-full rounded-lg bg-blue-600 px-4 py-3 font-medium text-white transition-colors hover:bg-blue-700 disabled:bg-gray-300 disabled:text-gray-500"
+              className="w-full rounded-xl px-4 py-3.5 font-medium tracking-wide transition-all duration-200 active:scale-[0.97] disabled:opacity-40"
+              style={{
+                background:
+                  allSoldOut || !selectedType
+                    ? "var(--bg-elevated)"
+                    : "var(--accent)",
+                color:
+                  allSoldOut || !selectedType
+                    ? "var(--text-muted)"
+                    : "var(--btn-on-accent)",
+              }}
             >
               {allSoldOut
                 ? "完売しました"
