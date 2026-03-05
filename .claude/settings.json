@@ -1,0 +1,44 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch",
+      "Read",
+      "Glob",
+      "Grep",
+      "Bash(npm *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)",
+      "Bash(echo *)",
+      "Bash(pwd)",
+      "Bash(which *)",
+      "Bash(* --version)",
+      "Bash(* --help *)",
+      "Bash(/Users/hijiri/workspace/rooms/prisma/migrations/20260306_add_ticket_types/migration.sql:*)",
+      "Bash(docker compose up -d --build --force-recreate app)",
+      "Bash(docker compose exec -T db psql -U rooms -d rooms -c \"INSERT INTO _prisma_migrations \\(id, checksum, migration_name, finished_at, applied_steps_count\\) VALUES \\(gen_random_uuid\\(\\), ''manual'', ''20260306_add_lottery'', NOW\\(\\), 1\\);\")",
+      "Bash(docker compose up -d --build)",
+      "Bash(prisma/migrations/20260306_add_has_lottery/migration.sql:*)",
+      "Bash(git init)",
+      "Bash(git branch -M main)"
+    ],
+    "deny": [
+      "Bash(rm *)",
+      "Bash(* rm *)",
+      "Bash(sudo *)",
+      "Bash(dd *)",
+      "Bash(mkfs *)",
+      "Bash(chmod 777 *)"
+    ]
+  }
+}
