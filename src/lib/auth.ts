@@ -17,18 +17,19 @@ export async function verifyLiffToken(accessToken: string): Promise<LineProfile 
     };
   }
 
-  const verifyRes = await fetch("https://api.line.me/oauth2/v2.1/verify", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      access_token: accessToken,
-      client_id: process.env.LINE_CHANNEL_ID!,
-    }),
-  });
+  const verifyRes = await fetch(
+    `https://api.line.me/oauth2/v2.1/verify?access_token=${encodeURIComponent(accessToken)}`
+  );
 
   if (!verifyRes.ok) {
     const errBody = await verifyRes.text();
-    console.error("LINE verify failed:", verifyRes.status, errBody, "channel_id:", process.env.LINE_CHANNEL_ID);
+    console.error("LINE verify failed:", verifyRes.status, errBody);
+    return null;
+  }
+
+  const verifyData = await verifyRes.json();
+  if (String(verifyData.client_id) !== process.env.LINE_CHANNEL_ID) {
+    console.error("LINE channel_id mismatch:", verifyData.client_id, "!=", process.env.LINE_CHANNEL_ID);
     return null;
   }
 
