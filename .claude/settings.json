@@ -30,7 +30,10 @@
       "Bash(docker compose up -d --build)",
       "Bash(prisma/migrations/20260306_add_has_lottery/migration.sql:*)",
       "Bash(git init)",
-      "Bash(git branch -M main)"
+      "Bash(git branch -M main)",
+      "Bash(git commit:*)",
+      "Bash(git remote add origin https://github.com/Hijiri-K/ticketRooms.git)",
+      "Bash(git push -u origin main)"
     ],
     "deny": [
       "Bash(rm *)",
